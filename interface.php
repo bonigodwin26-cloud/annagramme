@@ -99,7 +99,7 @@ $pseudo = is_string($_SESSION['pseudo'] ?? null) ? $_SESSION['pseudo'] : 'Visite
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= isset($_SESSION['user_id']) ? 'Anagramme - Historique' : 'Anagramme - Vérificateur' ?></title>
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 <div class="cadre <?= isset($_SESSION['user_id']) ? 'cadre-dashboard' : 'cadre-accueil' ?>">
@@ -117,9 +117,9 @@ $pseudo = is_string($_SESSION['pseudo'] ?? null) ? $_SESSION['pseudo'] : 'Visite
             <form method="post" action="">
                 <label for="string1">String 1</label>
                 <label for="string2">String 2</label>
-                <input id="string1" name="string1" type="text" maxlength="2000" value="<?= echapper($mot1) ?>" required
+                <input id="string1" name="string1" type="text" maxlength="2000" placeholder=" " value="<?= echapper($mot1) ?>" required
                        class="<?= $resultat === null ? '' : ($resultat ? 'champ-ok' : 'champ-erreur') ?>">
-                <input id="string2" name="string2" type="text" maxlength="2000" value="<?= echapper($mot2) ?>" required
+                <input id="string2" name="string2" type="text" maxlength="2000" placeholder=" " value="<?= echapper($mot2) ?>" required
                        class="<?= $resultat === null ? '' : ($resultat ? 'champ-ok' : 'champ-erreur') ?>">
                 <button type="submit">Soumettre</button>
                 <?php if ($erreur !== ''): ?>
