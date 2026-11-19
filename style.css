@@ -147,38 +147,33 @@ input:placeholder-shown {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 4px;
+    left: 3px;
     z-index: 1;
-    width: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
     height: auto;
     margin: 0;
     padding: 0;
     border: 0;
     border-radius: 4px;
     background-color: transparent;
-    background-image: url("assets/input-icon-gray.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 27px 33px;
     color: transparent;
     font-size: 0;
     cursor: pointer;
 }
 
-.champ-saisie:has(input:not(:placeholder-shown)) .effacer-champ {
-    background-image: url("assets/input-icon-dark.png");
+.effacer-champ img {
+    display: block;
+    width: 22px;
+    height: 28px;
+    object-fit: contain;
+    pointer-events: none;
 }
 
 .effacer-champ:hover {
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 27px 33px;
-    background-image: url("assets/input-icon-gray.png");
-}
-
-.champ-saisie:has(input:not(:placeholder-shown)) .effacer-champ:hover {
-    background-image: url("assets/input-icon-dark.png");
+    background: transparent;
 }
 
 .contenu form:has(input:not(:placeholder-shown)) button[type="submit"] {
