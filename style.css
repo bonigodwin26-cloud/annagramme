@@ -170,6 +170,7 @@ input:placeholder-shown {
     height: 28px;
     object-fit: contain;
     pointer-events: none;
+    transform: translateY(-4px);
 }
 
 .effacer-champ:hover {
