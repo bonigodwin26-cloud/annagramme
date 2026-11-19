@@ -4,17 +4,18 @@ declare(strict_types=1);
 session_start();
 require __DIR__ . '/config.php';
 
-function sontAnagrammes(string $chaine1, string $chaine2): bool
+function sontAnagrammes(string $mot1, string $mot2): bool
 {
-    if ($chaine1 === '' || $chaine2 === '' || strlen($chaine1) !== strlen($chaine2)) {
+    if ($mot1 === '' || $mot2 === '' || strlen($mot1) !== strlen($mot2)) {
         return false;
     }
 
-    $caracteres1 = str_split($chaine1);
-    $caracteres2 = str_split($chaine2);
-    sort($caracteres1);
-    sort($caracteres2);
-    return $caracteres1 === $caracteres2;
+    $frequences1 = array_count_values(str_split($mot1));
+    $frequences2 = array_count_values(str_split($mot2));
+    ksort($frequences1);
+    ksort($frequences2);
+
+    return $frequences1 === $frequences2;
 }
 
 function echapper(string $valeur): string
@@ -22,44 +23,47 @@ function echapper(string $valeur): string
     return htmlspecialchars($valeur, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-$chaine1 = '';
-$chaine2 = '';
+$mot1 = '';
+$mot2 = '';
 $erreur = '';
-$erreurBase = '';
 $resultat = null;
 $historique = [];
 $pdo = null;
+$erreurBase = '';
 
 try {
     $pdo = obtenirConnexion();
 } catch (PDOException $exception) {
-    $erreurBase = 'Base de données indisponible. Importez database.sql dans phpMyAdmin.';
+    $erreurBase = 'La base de données est indisponible. Vérifiez sa configuration et importez database.sql.';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $chaine1 = is_string($_POST['string1'] ?? null) ? trim($_POST['string1']) : '';
-    $chaine2 = is_string($_POST['string2'] ?? null) ? trim($_POST['string2']) : '';
+    $mot1 = is_string($_POST['string1'] ?? null) ? trim($_POST['string1']) : '';
+    $mot2 = is_string($_POST['string2'] ?? null) ? trim($_POST['string2']) : '';
 
-    if ($chaine1 === '' || $chaine2 === '') {
+    if ($mot1 === '' || $mot2 === '') {
         $erreur = 'Veuillez remplir les deux champs.';
-    } elseif (preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $chaine1 . $chaine2)) {
+    } elseif (preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $mot1 . $mot2)) {
         $erreur = 'Les champs contiennent des caractères non autorisés.';
     } else {
-        $resultat = sontAnagrammes($chaine1, $chaine2);
+        $resultat = sontAnagrammes($mot1, $mot2);
+
         if ($pdo instanceof PDO) {
             try {
-                $ajout = $pdo->prepare(
-                    'INSERT INTO verifications (session_id, chaine_1, chaine_2, resultat) '
-                    . 'VALUES (:session_id, :chaine_1, :chaine_2, :resultat)'
+                $utilisateurId = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : null;
+                $insertion = $pdo->prepare(
+                    'INSERT INTO verifications (user_id, session_id, chaine_1, chaine_2, resultat) '
+                    . 'VALUES (:user_id, :session_id, :chaine_1, :chaine_2, :resultat)'
                 );
-                $ajout->execute([
+                $insertion->execute([
+                    'user_id' => $utilisateurId,
                     'session_id' => session_id(),
-                    'chaine_1' => $chaine1,
-                    'chaine_2' => $chaine2,
+                    'chaine_1' => $mot1,
+                    'chaine_2' => $mot2,
                     'resultat' => $resultat ? 1 : 0,
                 ]);
             } catch (PDOException $exception) {
-                $erreurBase = 'La vérification n’a pas pu être enregistrée.';
+                $erreurBase = 'La vérification a été faite, mais elle n’a pas pu être enregistrée.';
             }
         }
     }
@@ -67,61 +71,98 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if ($pdo instanceof PDO) {
     try {
-        $liste = $pdo->prepare(
-            'SELECT chaine_1, chaine_2, resultat, date_verification FROM verifications '
-            . 'WHERE session_id = :session_id ORDER BY date_verification DESC, id DESC LIMIT 20'
-        );
-        $liste->execute(['session_id' => session_id()]);
-        $historique = $liste->fetchAll();
+        if (isset($_SESSION['user_id'])) {
+            $requete = $pdo->prepare(
+                'SELECT id, chaine_1, chaine_2, resultat, date_verification '
+                . 'FROM verifications WHERE user_id = :user_id ORDER BY date_verification DESC, id DESC LIMIT 20'
+            );
+            $requete->execute(['user_id' => (int) $_SESSION['user_id']]);
+        } else {
+            $requete = $pdo->prepare(
+                'SELECT id, chaine_1, chaine_2, resultat, date_verification '
+                . 'FROM verifications WHERE user_id IS NULL AND session_id = :session_id '
+                . 'ORDER BY date_verification DESC, id DESC LIMIT 20'
+            );
+            $requete->execute(['session_id' => session_id()]);
+        }
+        $historique = $requete->fetchAll();
     } catch (PDOException $exception) {
-        $erreurBase = 'Impossible de charger l’historique. Vérifiez le script database.sql.';
+        $erreurBase = 'Impossible de charger l’historique. Vérifiez que database.sql a bien été importé.';
     }
 }
+
+$pseudo = is_string($_SESSION['pseudo'] ?? null) ? $_SESSION['pseudo'] : 'Visiteur';
 ?>
 <!doctype html>
 <html lang="fr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Anagramme - Historique</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <title><?= isset($_SESSION['user_id']) ? 'Anagramme - Historique' : 'Anagramme - Vérificateur' ?></title>
+    <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
-<div class="cadre">
-    <header><span>Anagramme</span><span class="nom-visiteur">Historique</span></header>
-    <main class="contenu">
-        <section class="carte<?= $resultat === true ? ' resultat-succes' : ($resultat === false ? ' resultat-echec' : '') ?>">
+<div class="cadre <?= isset($_SESSION['user_id']) ? 'cadre-dashboard' : 'cadre-accueil' ?>">
+    <header class="entete">
+        <span class="marque">Anagramme</span>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <div class="profil"><span class="avatar" aria-hidden="true"></span><span><?= echapper($pseudo) ?></span></div>
+        <?php else: ?>
+            <a class="connexion" href="connexion.php">Se connecter</a>
+        <?php endif; ?>
+    </header>
+
+    <main class="contenu <?= isset($_SESSION['user_id']) ? 'contenu-dashboard' : 'contenu-accueil' ?>">
+        <section class="carte<?= $resultat === true ? ' resultat-succes' : ($resultat === false ? ' resultat-echec' : '') ?>" aria-label="Vérificateur d’anagrammes">
             <form method="post" action="">
                 <label for="string1">String 1</label>
                 <label for="string2">String 2</label>
-                <input id="string1" name="string1" type="text" value="<?= echapper($chaine1) ?>" required
+                <input id="string1" name="string1" type="text" maxlength="2000" value="<?= echapper($mot1) ?>" required
                        class="<?= $resultat === null ? '' : ($resultat ? 'champ-ok' : 'champ-erreur') ?>">
-                <input id="string2" name="string2" type="text" value="<?= echapper($chaine2) ?>" required
+                <input id="string2" name="string2" type="text" maxlength="2000" value="<?= echapper($mot2) ?>" required
                        class="<?= $resultat === null ? '' : ($resultat ? 'champ-ok' : 'champ-erreur') ?>">
                 <button type="submit">Soumettre</button>
-                <?php if ($erreur !== ''): ?><p class="message" role="alert"><?= echapper($erreur) ?></p><?php endif; ?>
-                <?php if ($erreurBase !== ''): ?><p class="message" role="status"><?= echapper($erreurBase) ?></p><?php endif; ?>
+                <?php if ($erreur !== ''): ?>
+                    <div class="message message-erreur" role="alert"><?= echapper($erreur) ?></div>
+                <?php endif; ?>
+                <?php if ($erreurBase !== ''): ?>
+                    <div class="message message-erreur" role="status"><?= echapper($erreurBase) ?></div>
+                <?php endif; ?>
             </form>
         </section>
-        <section class="historique" aria-label="Historique des vérifications">
-            <table>
-                <thead><tr><th></th><th>String 1</th><th>String 2</th></tr></thead>
-                <tbody>
-                <?php if ($historique === []): ?>
-                    <tr><td colspan="3" class="vide">Aucune vérification enregistrée.</td></tr>
-                <?php else: ?>
-                    <?php foreach ($historique as $numero => $ligne): ?>
-                        <tr class="<?= (bool) $ligne['resultat'] ? 'ligne-succes' : 'ligne-echec' ?>"
-                            aria-label="<?= (bool) $ligne['resultat'] ? 'Anagrammes' : 'Pas des anagrammes' ?>"
-                            title="Vérification du <?= echapper(date('d/m/Y H:i', strtotime($ligne['date_verification']))) ?>">
-                            <td><?= $numero ?></td><td><?= echapper($ligne['chaine_1']) ?></td><td><?= echapper($ligne['chaine_2']) ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-                </tbody>
-            </table>
+
+        <?php if (isset($_SESSION['user_id'])): ?>
+        <section class="historique" aria-labelledby="titre-historique">
+            <h1 id="titre-historique">Historique des vérifications</h1>
+            <div class="tableau-defilement">
+                <table>
+                    <thead>
+                        <tr><th scope="col" aria-label="Numéro"></th><th scope="col">String 1</th><th scope="col">String 2</th></tr>
+                    </thead>
+                    <tbody>
+                    <?php if ($historique === []): ?>
+                        <tr><td class="vide" colspan="3">Aucune vérification enregistrée.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($historique as $index => $ligne): ?>
+                            <tr class="<?= (bool) $ligne['resultat'] ? 'ligne-succes' : 'ligne-echec' ?>" aria-label="<?= (bool) $ligne['resultat'] ? 'Anagrammes' : 'Pas des anagrammes' ?>" title="Vérification du <?= echapper(date('d/m/Y H:i', strtotime($ligne['date_verification']))) ?>">
+                                <td><?= $index + 1 ?></td>
+                                <td><?= echapper($ligne['chaine_1']) ?></td>
+                                <td><?= echapper($ligne['chaine_2']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </section>
+        <?php endif; ?>
     </main>
+
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <a class="deconnexion" href="deconnexion.php" aria-label="Se déconnecter" title="Se déconnecter">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5M14 16l4-4-4-4M8 12h10"/></svg>
+        </a>
+    <?php endif; ?>
 </div>
 </body>
 </html>

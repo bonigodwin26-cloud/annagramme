@@ -3,10 +3,15 @@ declare(strict_types=1);
 
 function obtenirConnexion(): PDO
 {
+    $hote = '127.0.0.1';
+    $base = 'anagramme_db';
+    $utilisateur = 'root';
+    $motDePasse = '';
+
     return new PDO(
-        'mysql:host=127.0.0.1;dbname=anagramme_db;charset=utf8mb4',
-        'root',
-        '',
+        "mysql:host={$hote};dbname={$base};charset=utf8mb4",
+        $utilisateur,
+        $motDePasse,
         [
             PDO::ATTR_TIMEOUT => 3,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

@@ -1,41 +1,483 @@
-* { box-sizing: border-box; }
-:root { font-family: "Comic Sans MS", "Segoe Print", cursive; color: #222; }
-body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: #fff; }
-.cadre { position: relative; width: min(870px, calc(100vw - 20px)); height: min(530px, calc(100vh - 20px)); min-height: 430px; border: 2px solid #999; border-radius: 23px; }
-header { height: 62px; padding: 20px 22px; display: flex; align-items: center; justify-content: space-between; font-size: 20px; }
-.nom-visiteur { font-size: 16px; color: #666; }
-.contenu { position: absolute; top: 112px; right: 16px; bottom: 90px; left: 56px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; align-items: center; }
-.carte { width: 100%; max-width: 417px; padding: 34px 32px 39px; border: 1.5px solid #42a6ff; border-radius: 22px; }
-.carte.resultat-succes { border-color: #75c889; }
-.carte.resultat-echec { border-color: #ff7777; }
-.carte form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 30px; row-gap: 9px; }
-label { padding-left: 2px; font: 16px "Courier New", monospace; }
-input { width: 100%; height: 39px; padding: 5px 9px; border: 1.5px solid #777; border-radius: 10px; background: #fff; font: 15px Arial, sans-serif; }
-input.champ-ok { border-color: #75c889; }
-input.champ-erreur { border-color: #ff7777; }
-button { grid-column: 1 / -1; width: 100%; height: 40px; margin-top: 5px; border: 1px solid #78b6ed; border-radius: 9px; background: #a6c8e5; color: #fff; font: 15px Arial, sans-serif; cursor: pointer; }
-button:hover { background: #8db9df; }
-.message { grid-column: 1 / -1; margin: 4px 0 0; padding: 8px; border-radius: 6px; background: #fff0f0; color: #9e2525; font: 13px Arial, sans-serif; text-align: center; }
-.historique { min-width: 0; padding-left: 15px; border-left: 2px dashed #333; }
-table { width: 100%; max-height: 322px; overflow: auto; border: 2px solid #333; border-collapse: collapse; table-layout: fixed; font: 15px "Courier New", monospace; }
-th, td { padding: 8px 5px; border-right: 2px solid #444; text-align: center; overflow-wrap: anywhere; }
-th { height: 49px; border-bottom: 2px solid #444; font-weight: 400; }
-th:first-child, td:first-child { width: 20%; }
-th:nth-child(2), td:nth-child(2), th:nth-child(3), td:nth-child(3) { width: 40%; }
-th:last-child, td:last-child { border-right: 0; }
-td { height: 32px; }
-.ligne-succes { color: #20a64d; }
-.ligne-echec { color: #ed3030; }
-.vide { color: #666; font: 13px Arial, sans-serif; }
-@media (max-width: 720px) {
-    body { place-items: start center; }
-    .cadre { height: auto; min-height: 100vh; margin: 10px 0; }
-    .contenu { position: static; margin: 35px 20px 70px; display: grid; grid-template-columns: 1fr; gap: 35px; }
-    .carte { max-width: 100%; }
-    .historique { overflow-x: auto; }
+* {
+    box-sizing: border-box;
 }
+
+:root {
+    color-scheme: light;
+    font-family: "Comic Sans MS", "Segoe Print", cursive;
+    color: #222;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    background: #fff;
+}
+
+.cadre {
+    position: relative;
+    width: min(870px, calc(100vw - 20px));
+    height: min(530px, calc(100vh - 20px));
+    min-height: 430px;
+    border: 2px solid #999;
+    border-radius: 23px;
+}
+
+.entete {
+    height: 62px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.marque {
+    font-size: 20px;
+}
+
+.profil {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+}
+
+.avatar {
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: #287dc4;
+}
+
+.connexion {
+    padding: 7px 13px;
+    border-radius: 5px;
+    background: #287dc4;
+    color: #fff;
+    text-decoration: none;
+    font: 14px Arial, sans-serif;
+}
+
+.connexion:hover {
+    background: #176bac;
+}
+
+.contenu {
+    position: absolute;
+    top: 112px;
+    right: 16px;
+    bottom: 90px;
+    left: 56px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+}
+
+.carte {
+    width: 100%;
+    max-width: 417px;
+    padding: 34px 32px 39px;
+    border: 1.5px solid #42a6ff;
+    border-radius: 22px;
+}
+
+.carte.resultat-succes {
+    border-color: #75c889;
+}
+
+.carte.resultat-echec {
+    border-color: #ff7777;
+}
+
+.carte form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 30px;
+    row-gap: 9px;
+}
+
+label {
+    padding-left: 2px;
+    font-family: "Courier New", monospace;
+    font-size: 16px;
+}
+
+input {
+    width: 100%;
+    height: 39px;
+    padding: 5px 9px;
+    border: 1.5px solid #777;
+    border-radius: 10px;
+    background: #fff;
+    font: 15px Arial, sans-serif;
+}
+
+input:focus {
+    outline: 2px solid #72b6ff66;
+}
+
+input.champ-ok {
+    border-color: #75c889;
+}
+
+input.champ-erreur {
+    border-color: #ff7777;
+}
+
+button {
+    grid-column: 1 / -1;
+    width: 100%;
+    height: 40px;
+    margin-top: 5px;
+    border: 1px solid #78b6ed;
+    border-radius: 9px;
+    background: #a6c8e5;
+    color: #fff;
+    font: 15px Arial, sans-serif;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #8db9df;
+}
+
+.message {
+    grid-column: 1 / -1;
+    margin-top: 4px;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.message-erreur {
+    color: #9e2525;
+    background: #fff0f0;
+}
+
+.historique {
+    min-width: 0;
+    padding-left: 15px;
+    border-left: 2px dashed #333;
+}
+
+.historique h1,
+.visuellement-cache {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.tableau-defilement {
+    max-height: 322px;
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+    border: 2px solid #333;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-family: "Courier New", monospace;
+    font-size: 15px;
+}
+
+th,
+td {
+    padding: 8px 5px;
+    border-right: 2px solid #444;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+th {
+    height: 49px;
+    border-bottom: 2px solid #444;
+    font-weight: 400;
+}
+
+th:first-child,
+td:first-child {
+    width: 20%;
+}
+
+th:nth-child(2),
+td:nth-child(2),
+th:nth-child(3),
+td:nth-child(3) {
+    width: 40%;
+}
+
+th:last-child,
+td:last-child {
+    border-right: 0;
+}
+
+td {
+    height: 32px;
+}
+
+.ligne-succes {
+    color: #20a64d;
+}
+
+.ligne-echec {
+    color: #ed3030;
+}
+
+.vide {
+    color: #666;
+    font: 13px Arial, sans-serif;
+}
+
+.deconnexion {
+    position: absolute;
+    bottom: 12px;
+    left: 16px;
+    width: 31px;
+    height: 31px;
+    color: #ff4545;
+}
+
+.deconnexion svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.cadre-auth {
+    width: min(748px, calc(100vw - 16px));
+    height: min(455px, calc(100vh - 16px));
+    min-height: 0;
+    border: 1.5px solid #555;
+    border-radius: 21px;
+}
+
+.cadre-accueil {
+    width: min(622px, calc(100vw - 20px));
+    height: min(379px, calc(100vh - 20px));
+    min-height: 0;
+    border: 1.5px solid #555;
+    border-radius: 17px;
+}
+
+.cadre-accueil .entete {
+    height: 55px;
+    padding: 10px 10px 0 14px;
+}
+
+.cadre-accueil .marque {
+    font-size: 16px;
+}
+
+.cadre-accueil .connexion {
+    padding: 5px 11px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.contenu-accueil {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contenu-accueil .carte {
+    width: min(374px, calc(100% - 28px));
+    height: 168px;
+    padding: 29px 29px 35px;
+    border-radius: 16px;
+}
+
+.contenu-accueil .carte form {
+    column-gap: 27px;
+    row-gap: 5px;
+}
+
+.contenu-accueil label {
+    font-size: 15px;
+}
+
+.contenu-accueil input {
+    height: 35px;
+    border-radius: 9px;
+}
+
+.contenu-accueil button {
+    height: 35px;
+    margin-top: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.cadre-auth .entete {
+    height: 62px;
+    padding: 18px;
+}
+
+.auth-marque {
+    color: #222;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.auth-marque:hover {
+    color: #222;
+}
+
+.auth-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(352px, calc(100% - 36px));
+    padding: 19px 43px 0;
+    transform: translate(-50%, -50%);
+    border: 1.5px solid #42a6ff;
+    border-radius: 21px;
+    background: #fff;
+}
+
+.auth-inscription {
+    height: 293px;
+}
+
+.auth-connexion {
+    height: 266px;
+}
+
+.auth-box form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+}
+
+.auth-box label {
+    margin: 0;
+    padding-left: 2px;
+    font-family: "Comic Sans MS", "Segoe Print", cursive;
+    font-size: 16px;
+    line-height: 1.15;
+}
+
+.auth-box input {
+    height: 42px;
+    margin-bottom: 5px;
+    border: 1.5px solid #555;
+    border-radius: 11px;
+    font-size: 15px;
+}
+
+.auth-box button {
+    width: calc(100% + 14px);
+    height: 33px;
+    margin: 11px 0 0 1px;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.auth-connexion button {
+    margin-top: 18px;
+}
+
+.auth-lien {
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.auth-lien a {
+    color: #168ddd;
+    text-decoration: none;
+}
+
+.auth-box .message {
+    margin: 2px 0;
+    padding: 5px;
+    font: 12px Arial, sans-serif;
+    white-space: normal;
+}
+
+@media (max-width: 720px) {
+    body {
+        place-items: start center;
+    }
+
+    .cadre:not(.cadre-auth):not(.cadre-accueil) {
+        height: auto;
+        min-height: 100vh;
+        margin: 10px 0;
+    }
+
+    .contenu {
+        position: static;
+        margin: 35px 20px 70px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 35px;
+    }
+
+    .carte {
+        max-width: 100%;
+    }
+
+    .tableau-defilement {
+        max-height: 320px;
+    }
+
+    .cadre-auth {
+        margin: 8px 0;
+    }
+
+    .cadre-accueil {
+        height: min(379px, calc(100vh - 20px));
+        min-height: 0;
+        margin: 10px 0;
+    }
+
+    .contenu-accueil {
+        position: absolute;
+        inset: 0;
+        margin: 0;
+        display: flex;
+        grid-template-columns: none;
+        gap: 0;
+    }
+}
+
 @media (max-width: 420px) {
-    .contenu { margin-right: 12px; margin-left: 12px; }
-    .carte { padding: 25px 18px; }
-    .carte form { column-gap: 12px; }
+    .contenu {
+        margin-right: 12px;
+        margin-left: 12px;
+    }
+
+    .carte {
+        padding: 25px 18px;
+    }
+
+    .carte form {
+        column-gap: 12px;
+    }
+
+    .auth-box {
+        padding-right: 24px;
+        padding-left: 24px;
+    }
 }
