@@ -468,6 +468,15 @@ td {
     font-size: 14px;
 }
 
+.auth-box form:not(:has(input:invalid)) button {
+    border-color: #287dc4;
+    background: #287dc4;
+}
+
+.auth-box form:not(:has(input:invalid)) button:hover {
+    background: #176bac;
+}
+
 .auth-connexion button {
     margin-top: 18px;
 }
