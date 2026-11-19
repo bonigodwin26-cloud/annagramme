@@ -1,2 +1,2 @@
 <?php
-require __DIR__ . '/anagramme.php';
+require __DIR__ . '/interface.php';

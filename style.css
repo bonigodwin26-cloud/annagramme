@@ -1,44 +1,41 @@
 * { box-sizing: border-box; }
-
 :root { font-family: "Comic Sans MS", "Segoe Print", cursive; color: #222; }
-
 body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: #fff; }
-
-.cadre {
-    position: relative;
-    width: min(622px, calc(100vw - 20px));
-    height: min(379px, calc(100vh - 20px));
-    border: 1.5px solid #555;
-    border-radius: 17px;
-}
-
-header { height: 55px; padding: 10px 14px; font-size: 16px; }
-
-.carte {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: min(374px, calc(100% - 28px));
-    height: 168px;
-    padding: 29px;
-    transform: translate(-50%, -50%);
-    border: 1.5px solid #42a6ff;
-    border-radius: 16px;
-}
-
+.cadre { position: relative; width: min(870px, calc(100vw - 20px)); height: min(530px, calc(100vh - 20px)); min-height: 430px; border: 2px solid #999; border-radius: 23px; }
+header { height: 62px; padding: 20px 22px; display: flex; align-items: center; justify-content: space-between; font-size: 20px; }
+.nom-visiteur { font-size: 16px; color: #666; }
+.contenu { position: absolute; top: 112px; right: 16px; bottom: 90px; left: 56px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+.carte { width: 100%; max-width: 417px; padding: 34px 32px 39px; border: 1.5px solid #42a6ff; border-radius: 22px; }
 .carte.resultat-succes { border-color: #75c889; }
 .carte.resultat-echec { border-color: #ff7777; }
-
-form { display: grid; grid-template-columns: 1fr 1fr; column-gap: 27px; row-gap: 5px; }
-label { padding-left: 2px; font: 15px "Courier New", monospace; }
-input { width: 100%; height: 35px; padding: 5px 9px; border: 1.5px solid #777; border-radius: 9px; font: 15px Arial, sans-serif; }
+.carte form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 30px; row-gap: 9px; }
+label { padding-left: 2px; font: 16px "Courier New", monospace; }
+input { width: 100%; height: 39px; padding: 5px 9px; border: 1.5px solid #777; border-radius: 10px; background: #fff; font: 15px Arial, sans-serif; }
 input.champ-ok { border-color: #75c889; }
 input.champ-erreur { border-color: #ff7777; }
-button { grid-column: 1 / -1; width: 100%; height: 35px; margin-top: 8px; border: 1px solid #78b6ed; border-radius: 8px; background: #a6c8e5; color: #fff; font: 14px Arial, sans-serif; cursor: pointer; }
+button { grid-column: 1 / -1; width: 100%; height: 40px; margin-top: 5px; border: 1px solid #78b6ed; border-radius: 9px; background: #a6c8e5; color: #fff; font: 15px Arial, sans-serif; cursor: pointer; }
 button:hover { background: #8db9df; }
-.message { grid-column: 1 / -1; margin: 3px 0 0; color: #9e2525; font: 12px Arial, sans-serif; }
-
-@media (max-width: 500px) {
+.message { grid-column: 1 / -1; margin: 4px 0 0; padding: 8px; border-radius: 6px; background: #fff0f0; color: #9e2525; font: 13px Arial, sans-serif; text-align: center; }
+.historique { min-width: 0; padding-left: 15px; border-left: 2px dashed #333; }
+table { width: 100%; max-height: 322px; overflow: auto; border: 2px solid #333; border-collapse: collapse; table-layout: fixed; font: 15px "Courier New", monospace; }
+th, td { padding: 8px 5px; border-right: 2px solid #444; text-align: center; overflow-wrap: anywhere; }
+th { height: 49px; border-bottom: 2px solid #444; font-weight: 400; }
+th:first-child, td:first-child { width: 20%; }
+th:nth-child(2), td:nth-child(2), th:nth-child(3), td:nth-child(3) { width: 40%; }
+th:last-child, td:last-child { border-right: 0; }
+td { height: 32px; }
+.ligne-succes { color: #20a64d; }
+.ligne-echec { color: #ed3030; }
+.vide { color: #666; font: 13px Arial, sans-serif; }
+@media (max-width: 720px) {
+    body { place-items: start center; }
+    .cadre { height: auto; min-height: 100vh; margin: 10px 0; }
+    .contenu { position: static; margin: 35px 20px 70px; display: grid; grid-template-columns: 1fr; gap: 35px; }
+    .carte { max-width: 100%; }
+    .historique { overflow-x: auto; }
+}
+@media (max-width: 420px) {
+    .contenu { margin-right: 12px; margin-left: 12px; }
     .carte { padding: 25px 18px; }
-    form { column-gap: 12px; }
+    .carte form { column-gap: 12px; }
 }
