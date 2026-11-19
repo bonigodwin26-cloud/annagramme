@@ -145,15 +145,15 @@ input:placeholder-shown {
 
 .effacer-champ {
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 50%;
+    bottom: auto;
     left: 3px;
     z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 28px;
-    height: auto;
+    height: 28px;
     margin: 0;
     padding: 0;
     border: 0;
@@ -162,6 +162,7 @@ input:placeholder-shown {
     color: transparent;
     font-size: 0;
     cursor: pointer;
+    transform: translateY(-50%);
 }
 
 .effacer-champ img {
