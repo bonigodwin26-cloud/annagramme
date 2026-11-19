@@ -165,6 +165,14 @@ input:placeholder-shown {
 
 .effacer-champ:hover {
     background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 27px 33px;
+    background-image: url("assets/input-icon-gray.png");
+}
+
+.champ-saisie:has(input:not(:placeholder-shown)) .effacer-champ:hover {
+    background-image: url("assets/input-icon-dark.png");
 }
 
 .contenu form:has(input:not(:placeholder-shown)) button[type="submit"] {

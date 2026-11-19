@@ -99,7 +99,7 @@ $pseudo = is_string($_SESSION['pseudo'] ?? null) ? $_SESSION['pseudo'] : 'Visite
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= isset($_SESSION['user_id']) ? 'Anagramme - Historique' : 'Anagramme - Vérificateur' ?></title>
-    <link rel="stylesheet" href="style.css?v=11">
+    <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
 <div class="cadre <?= isset($_SESSION['user_id']) ? 'cadre-dashboard' : 'cadre-accueil' ?>">
@@ -114,16 +114,16 @@ $pseudo = is_string($_SESSION['pseudo'] ?? null) ? $_SESSION['pseudo'] : 'Visite
 
     <main class="contenu <?= isset($_SESSION['user_id']) ? 'contenu-dashboard' : 'contenu-accueil' ?>">
         <section class="carte<?= $resultat === true ? ' resultat-succes' : ($resultat === false ? ' resultat-echec' : '') ?>" aria-label="Vérificateur d’anagrammes">
-            <form method="post" action="">
+            <form method="post" action="" autocomplete="off">
                 <label for="string1">String 1</label>
                 <label for="string2">String 2</label>
                 <div class="champ-saisie">
-                    <input id="string1" name="string1" type="text" maxlength="2000" placeholder=" " value="<?= echapper($mot1) ?>" required
+                    <input id="string1" name="string1" type="text" maxlength="2000" autocomplete="off" placeholder=" " value="<?= echapper($mot1) ?>" required
                            class="<?= $resultat === null ? '' : ($resultat ? 'champ-ok' : 'champ-erreur') ?>">
                     <button class="effacer-champ" type="button" data-cible="string1" aria-label="Effacer String 1" title="Effacer String 1"></button>
                 </div>
                 <div class="champ-saisie">
-                    <input id="string2" name="string2" type="text" maxlength="2000" placeholder=" " value="<?= echapper($mot2) ?>" required
+                    <input id="string2" name="string2" type="text" maxlength="2000" autocomplete="off" placeholder=" " value="<?= echapper($mot2) ?>" required
                            class="<?= $resultat === null ? '' : ($resultat ? 'champ-ok' : 'champ-erreur') ?>">
                     <button class="effacer-champ" type="button" data-cible="string2" aria-label="Effacer String 2" title="Effacer String 2"></button>
                 </div>
