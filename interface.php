@@ -99,7 +99,7 @@ $pseudo = is_string($_SESSION['pseudo'] ?? null) ? $_SESSION['pseudo'] : 'Visite
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= isset($_SESSION['user_id']) ? 'Anagramme - Historique' : 'Anagramme - Vérificateur' ?></title>
-    <link rel="stylesheet" href="style.css?v=12">
+    <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
 <div class="cadre <?= isset($_SESSION['user_id']) ? 'cadre-dashboard' : 'cadre-accueil' ?>">
@@ -176,6 +176,9 @@ document.querySelectorAll('.effacer-champ').forEach((bouton) => {
         const champ = document.getElementById(bouton.dataset.cible);
         if (!champ) return;
         champ.value = '';
+        champ.classList.remove('champ-ok', 'champ-erreur');
+        const carte = bouton.closest('.carte');
+        if (carte) carte.classList.remove('resultat-succes', 'resultat-echec');
         champ.dispatchEvent(new Event('input', { bubbles: true }));
         champ.focus();
     });

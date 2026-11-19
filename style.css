@@ -135,12 +135,18 @@ input:placeholder-shown {
 .champ-saisie {
     position: relative;
     min-width: 0;
+    height: 39px;
+}
+
+.champ-saisie input {
+    display: block;
+    height: 100%;
 }
 
 .effacer-champ {
     position: absolute;
     top: 50%;
-    left: 5px;
+    left: 4px;
     z-index: 1;
     width: 27px;
     height: 33px;
