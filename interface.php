@@ -99,7 +99,7 @@ $pseudo = is_string($_SESSION['pseudo'] ?? null) ? $_SESSION['pseudo'] : 'Visite
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= isset($_SESSION['user_id']) ? 'Anagramme - Historique' : 'Anagramme - Vérificateur' ?></title>
-    <link rel="stylesheet" href="style.css?v=20">
+    <link rel="stylesheet" href="style.css?v=21">
 </head>
 <body>
 <div class="cadre <?= isset($_SESSION['user_id']) ? 'cadre-dashboard' : 'cadre-accueil' ?>">
@@ -143,17 +143,19 @@ $pseudo = is_string($_SESSION['pseudo'] ?? null) ? $_SESSION['pseudo'] : 'Visite
             <div class="tableau-defilement">
                 <table>
                     <thead>
-                        <tr><th scope="col" aria-label="Numéro"></th><th scope="col">String 1</th><th scope="col">String 2</th></tr>
+                        <tr><th scope="col" aria-label="Numéro"></th><th scope="col">String 1</th><th scope="col">String 2</th><th scope="col">Date</th><th scope="col">Heure</th></tr>
                     </thead>
                     <tbody>
                     <?php if ($historique === []): ?>
-                        <tr><td class="vide" colspan="3">Aucune vérification enregistrée.</td></tr>
+                        <tr><td class="vide" colspan="5">Aucune vérification enregistrée.</td></tr>
                     <?php else: ?>
                         <?php foreach ($historique as $index => $ligne): ?>
                             <tr class="<?= (bool) $ligne['resultat'] ? 'ligne-succes' : 'ligne-echec' ?>" aria-label="<?= (bool) $ligne['resultat'] ? 'Anagrammes' : 'Pas des anagrammes' ?>" title="Vérification du <?= echapper(date('d/m/Y H:i', strtotime($ligne['date_verification']))) ?>">
                                 <td><?= $index + 1 ?></td>
                                 <td><?= echapper($ligne['chaine_1']) ?></td>
                                 <td><?= echapper($ligne['chaine_2']) ?></td>
+                                <td><?= echapper(date('d/m/Y', strtotime($ligne['date_verification']))) ?></td>
+                                <td><?= echapper(date('H:i', strtotime($ligne['date_verification']))) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
