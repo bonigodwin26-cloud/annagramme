@@ -338,6 +338,8 @@ td {
 }
 
 .cadre-accueil .entete {
+    position: relative;
+    z-index: 2;
     height: 55px;
     padding: 10px 10px 0 14px;
 }
