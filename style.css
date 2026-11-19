@@ -129,14 +129,45 @@ input:placeholder-shown {
 
 .contenu input {
     padding-left: 42px;
-    background-image: url("assets/input-icon-gray.png");
+    background-image: none;
 }
 
-.contenu input:not(:placeholder-shown) {
+.champ-saisie {
+    position: relative;
+    min-width: 0;
+}
+
+.effacer-champ {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    z-index: 1;
+    width: 27px;
+    height: 33px;
+    margin: 0;
+    padding: 0;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 4px;
+    background-color: transparent;
+    background-image: url("assets/input-icon-gray.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 27px 33px;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+}
+
+.champ-saisie:has(input:not(:placeholder-shown)) .effacer-champ {
     background-image: url("assets/input-icon-dark.png");
 }
 
-.contenu form:has(input:not(:placeholder-shown)) button {
+.effacer-champ:hover {
+    background-color: transparent;
+}
+
+.contenu form:has(input:not(:placeholder-shown)) button[type="submit"] {
     border-color: #287dc4;
     background: #287dc4;
 }

@@ -99,7 +99,7 @@ $pseudo = is_string($_SESSION['pseudo'] ?? null) ? $_SESSION['pseudo'] : 'Visite
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= isset($_SESSION['user_id']) ? 'Anagramme - Historique' : 'Anagramme - Vérificateur' ?></title>
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 <div class="cadre <?= isset($_SESSION['user_id']) ? 'cadre-dashboard' : 'cadre-accueil' ?>">
@@ -117,10 +117,16 @@ $pseudo = is_string($_SESSION['pseudo'] ?? null) ? $_SESSION['pseudo'] : 'Visite
             <form method="post" action="">
                 <label for="string1">String 1</label>
                 <label for="string2">String 2</label>
-                <input id="string1" name="string1" type="text" maxlength="2000" placeholder=" " value="<?= echapper($mot1) ?>" required
-                       class="<?= $resultat === null ? '' : ($resultat ? 'champ-ok' : 'champ-erreur') ?>">
-                <input id="string2" name="string2" type="text" maxlength="2000" placeholder=" " value="<?= echapper($mot2) ?>" required
-                       class="<?= $resultat === null ? '' : ($resultat ? 'champ-ok' : 'champ-erreur') ?>">
+                <div class="champ-saisie">
+                    <input id="string1" name="string1" type="text" maxlength="2000" placeholder=" " value="<?= echapper($mot1) ?>" required
+                           class="<?= $resultat === null ? '' : ($resultat ? 'champ-ok' : 'champ-erreur') ?>">
+                    <button class="effacer-champ" type="button" data-cible="string1" aria-label="Effacer String 1" title="Effacer String 1"></button>
+                </div>
+                <div class="champ-saisie">
+                    <input id="string2" name="string2" type="text" maxlength="2000" placeholder=" " value="<?= echapper($mot2) ?>" required
+                           class="<?= $resultat === null ? '' : ($resultat ? 'champ-ok' : 'champ-erreur') ?>">
+                    <button class="effacer-champ" type="button" data-cible="string2" aria-label="Effacer String 2" title="Effacer String 2"></button>
+                </div>
                 <button type="submit">Soumettre</button>
                 <?php if ($erreur !== ''): ?>
                     <div class="message message-erreur" role="alert"><?= echapper($erreur) ?></div>
@@ -164,5 +170,16 @@ $pseudo = is_string($_SESSION['pseudo'] ?? null) ? $_SESSION['pseudo'] : 'Visite
         </a>
     <?php endif; ?>
 </div>
+<script>
+document.querySelectorAll('.effacer-champ').forEach((bouton) => {
+    bouton.addEventListener('click', () => {
+        const champ = document.getElementById(bouton.dataset.cible);
+        if (!champ) return;
+        champ.value = '';
+        champ.dispatchEvent(new Event('input', { bubbles: true }));
+        champ.focus();
+    });
+});
+</script>
 </body>
 </html>
