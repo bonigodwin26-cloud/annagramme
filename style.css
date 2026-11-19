@@ -145,14 +145,14 @@ input:placeholder-shown {
 
 .effacer-champ {
     position: absolute;
-    top: 50%;
+    top: 0;
+    bottom: 0;
     left: 4px;
     z-index: 1;
     width: 27px;
-    height: 33px;
+    height: auto;
     margin: 0;
     padding: 0;
-    transform: translateY(-50%);
     border: 0;
     border-radius: 4px;
     background-color: transparent;
