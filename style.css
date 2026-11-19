@@ -162,7 +162,7 @@ input:placeholder-shown {
     color: transparent;
     font-size: 0;
     cursor: pointer;
-    transform: translateY(-50%);
+    transform: translateY(calc(-50% - 8px));
 }
 
 .effacer-champ img {
